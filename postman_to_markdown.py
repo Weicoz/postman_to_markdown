@@ -127,25 +127,26 @@ def pluck_result(detail):
 
 
 def pluck_explan(detail, use_def_parame=True):
+    name = detail['name']
     if 'response' in detail:
         if detail['response']:
             v = json.loads(detail['response'][0]['body'])
-            explan = build_explan(v, '', 0)
+            explan = build_explan(name, v, '', 0)
             return "**返回参数说明** \n\n|参数|类型|描述|\n|:-------|:-------|:-------|\n%s" % explan
     return ""
 
 
-def build_explan(body, explan, level):
+def build_explan(name, body, explan, level):
     level_str = ''
     for i in range(0, level):
         level_str += "- "
     if isinstance(body, list):
         if body:
-            explan = build_explan(body[0], explan, level + 1)
+            explan = build_explan(name, body[0], explan, level + 1)
     elif isinstance(body, dict):
         for k in body:
-            explan += "| " + level_str + k + " | string | %s |\n" % set_def_parame(k)
-            explan = build_explan(body[k], explan, level + 1)
+            explan += "| " + level_str + k + " | string | %s |\n" % set_def_parame(name, k)
+            explan = build_explan(name, body[k], explan, level + 1)
     return explan
 
 
@@ -162,15 +163,17 @@ def pluck_filename(detail, path=''):
     return path + "/" + filename.replace('/', '.') + ".md"
 
 
-def set_def_parame(key, use_def_parame=True):
+def set_def_parame(name, key, use_def_parame=True):
     parame_str = ''
-    if (key in config['parame']) and use_def_parame:
+    if name in config['api'] and key in config['api'][name]:
+        parame_str = config['api'][name][key]
+    elif (key in config['parame']) and use_def_parame:
         parame_str = config['parame'][key]
     return parame_str
 
 
 def save_markdown(url='', filename='makedown.md', description='', method='', header='', body='', result='', explan=''):
-    url = config['host'] + "/" + re.sub("(http|https)://(.*?)/", '', url)
+    url = config['host'] + re.sub("{{host}}", '', url)
     url = re.sub("/[0-9]+", '/{{id}}', url)
     string = load_template() % (description, url, method, header, body, result, explan)
     save_file(filename, string)
