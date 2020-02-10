@@ -1,0 +1,17 @@
+{
+    "host": "",
+    "parame": {
+        "parame": "公共参数数组 # 在api中找不到则在父变量中寻找",
+        "msg": "返回消息 # 默认返回类型为 string",
+        "success": "int|返回错误码 # 用 分隔号 可以指定返回类型",
+        "data": "array|返回数据 # 公共类型"
+    },
+    "api": {
+        "login": {
+            "login_name": "登陆用户名",
+            "comp_name": "公司名称",
+            "email": "邮箱地址",
+            "sex": "bool|性别 0:男;1:女",
+        }
+    }
+}

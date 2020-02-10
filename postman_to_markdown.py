@@ -136,6 +136,23 @@ def pluck_explan(detail, use_def_parame=True):
     return ""
 
 
+# 判断是否为数字
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+    return False
+
+
 def build_explan(name, body, explan, level):
     level_str = ''
     for i in range(0, level):
@@ -145,7 +162,7 @@ def build_explan(name, body, explan, level):
             explan = build_explan(name, body[0], explan, level + 1)
     elif isinstance(body, dict):
         for k in body:
-            explan += "| " + level_str + k + " | string | %s |\n" % set_def_parame(name, k)
+            explan += "| " + level_str + set_def_parame(name, k)
             explan = build_explan(name, body[k], explan, level + 1)
     return explan
 
@@ -164,12 +181,26 @@ def pluck_filename(detail, path=''):
 
 
 def set_def_parame(name, key, use_def_parame=True):
-    parame_str = ''
+    param_str = ''
+    param = key
+    param_type = 'string'
+    if is_number(key) and name in config['api'] and '#is_number' in config['api'][name]:
+        param = config['api'][name]['#is_number']
     if name in config['api'] and key in config['api'][name]:
-        parame_str = config['api'][name][key]
+        if "|" in config['api'][name][key]:
+            param_arr = config['api'][name][key].split("|")
+            param_type = param_arr[0]
+            param_str = param_arr[1]
+        else:
+            param_str = config['api'][name][key]
     elif (key in config['parame']) and use_def_parame:
-        parame_str = config['parame'][key]
-    return parame_str
+        if "|" in config['parame'][key]:
+            param_arr = config['parame'][key].split("|")
+            param_type = param_arr[0]
+            param_str = param_arr[1]
+        else:
+            param_str = config['parame'][key]
+    return param + " | %s | %s |\n" % (param_type, param_str)
 
 
 def save_markdown(url='', filename='makedown.md', description='', method='', header='', body='', result='', explan=''):
