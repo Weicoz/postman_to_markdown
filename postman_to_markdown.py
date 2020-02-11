@@ -164,6 +164,8 @@ def build_explan(name, body, explan, level):
         for k in body:
             explan += "| " + level_str + set_def_parame(name, k)
             explan = build_explan(name, body[k], explan, level + 1)
+            if is_number(k):
+                break
     return explan
 
 
@@ -185,7 +187,13 @@ def set_def_parame(name, key, use_def_parame=True):
     param = key
     param_type = 'string'
     if is_number(key) and name in config['api'] and '#is_number' in config['api'][name]:
-        param = config['api'][name]['#is_number']
+        if "|" in config['api'][name]['#is_number']:
+            param_arr = config['api'][name]['#is_number'].split("|")
+            param = param_arr[0]
+            param_type = param_arr[1]
+            param_str = param_arr[2]
+        else:
+            param = config['api'][name]['#is_number']
     if name in config['api'] and key in config['api'][name]:
         if "|" in config['api'][name][key]:
             param_arr = config['api'][name][key].split("|")
