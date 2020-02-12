@@ -98,9 +98,14 @@ def pluck_body(detail):
         mode = detail['request']['body']['mode']
         for v in detail['request']['body'][mode]:
             description = ''
+            types = v['type']
             if "description" in v:
                 description = v['description']
-            body += "| " + v['key'] + " | 是 | " + v['type'] + " | " + description + " |\n"
+                if "|" in v['description']:
+                    desc_arr = v['description'].split("|")
+                    types = desc_arr[0]
+                    description = desc_arr[1]
+            body += "| " + v['key'] + " | 是 | " + types + " | " + description + " |\n"
         if not body:
             return ""
     else:
