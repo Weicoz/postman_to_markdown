@@ -105,17 +105,12 @@ def pluck_body(detail):
                     desc_arr = v['description'].split("|")
                     types = desc_arr[0]
                     description = desc_arr[1]
-            if config['example'] == 1:
-                if description == '':
-                    description = '例如：' + v['value']
-                else:
-                    description = description + '; 例如：' + v['value']
-            body += "| " + v['key'] + " | 是 | " + types + " | " + description + " |\n"
+            body += "| " + v['key'] + " | 是 | " + types + " | " + description + " | " + v['value'] + "\n"
         if not body:
             return ""
     else:
         return ""
-    return "**参数：**\n\n|参数名|必选|类型|说明|\n|:----    |:---|:----- |-----   |\n%s" % body
+    return "**参数：**\n\n|参数名|必选|类型|说明|例子|\n|:----    |:---|:-----|:----- |-----   |\n%s" % body
 
 
 def pluck_description(detail):
