@@ -109,7 +109,7 @@ def pluck_body(detail):
                 if description == '':
                     description = '例如：' + v['value']
                 else:
-                    description = description + ';例如：' + v['value']
+                    description = description + '; 例如：' + v['value']
             body += "| " + v['key'] + " | 是 | " + types + " | " + description + " |\n"
         if not body:
             return ""
