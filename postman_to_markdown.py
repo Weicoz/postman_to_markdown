@@ -99,23 +99,24 @@ def pluck_body(detail):
         for v in detail['request']['body'][mode]:
             description = ''
             types = v['type']
+            value = ''
+            if 'value' in v.keys():
+                value = v['value']
+            elif 'src' in v.keys():
+                value = v['src']
             if "description" in v:
                 description = v['description']
                 if "|" in v['description']:
                     desc_arr = v['description'].split("|")
                     types = desc_arr[0]
                     description = desc_arr[1]
-                    value = ''
-                    if 'value' in v.keys():
-                        value = v['value']
-                    elif 'src' in v.keys:
-                        value = v['src']
-            body += "| " + v['key'] + " | 是 | " + types + " | " + description + " | " + value + "\n"
+
+            body += "| " + v['key'] + " | " + types + " | " + description + " | " + value + " |\n"
         if not body:
             return ""
     else:
         return ""
-    return "**参数：**\n\n|参数名|必选|类型|说明|例子|\n|:----    |:---|:-----|:----- |-----   |\n%s" % body
+    return "**参数：**\n\n|参数名|类型|说明|例子|\n|:---- |:-----|:----- |-----   |\n%s" % body
 
 
 def pluck_description(detail):
