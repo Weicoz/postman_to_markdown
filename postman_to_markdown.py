@@ -57,10 +57,11 @@ def run():
             description = pluck_description(doc[ls])
             method = pluck_method(doc[ls])
             header = pluck_header(doc[ls])
+            query = pluck_query(doc[ls])
             body = pluck_body(doc[ls])
             result = pluck_result(doc[ls])
             explan = pluck_explan(doc[ls])
-            save_markdown(url, filename, description, method, header, body, result, explan)
+            save_markdown(url, filename, description, method, header, query, body, result, explan)
 
 
 def view_postman(postman_json, doc):
@@ -100,8 +101,12 @@ def pluck_body(detail):
             description = ''
             types = v['type']
             value = ''
+            if 'disabled' in v.keys():
+                continue
             if 'value' in v.keys():
                 value = v['value']
+                if v['value'] is None:
+                    value = ''
             elif 'src' in v.keys():
                 value = v['src']
             if "description" in v:
@@ -116,7 +121,37 @@ def pluck_body(detail):
             return ""
     else:
         return ""
-    return "**参数：**\n\n|参数名|类型|说明|例子|\n|:---- |:-----|:----- |-----   |\n%s" % body
+    return "**参数：**\n\n|参数名|类型|说明|参考参数|\n|:---- |:-----|:----- |-----   |\n%s" % body
+
+
+def pluck_query(detail):
+    query = ""
+    if "query" in detail['request']['url']:
+        for v in detail['request']['url']['query']:
+            description = ''
+            types = 'string'
+            value = ''
+            if 'disabled' in v.keys():
+                continue
+            if 'value' in v.keys():
+                value = v['value']
+                if v['value'] is None:
+                    value = ''
+            elif 'src' in v.keys():
+                value = v['src']
+            if "description" in v:
+                description = v['description']
+                if "|" in v['description']:
+                    desc_arr = v['description'].split("|")
+                    types = desc_arr[0]
+                    description = desc_arr[1]
+
+            query += "| " + v['key'] + " | " + types + " | " + description + " | " + value + " |\n"
+        if not query:
+            return ""
+    else:
+        return ""
+    return "**参数：**\n\n|参数名|类型|说明|例子|\n|:---- |:-----|:----- |-----   |\n%s" % query
 
 
 def pluck_description(detail):
@@ -222,10 +257,11 @@ def set_def_parame(name, key, use_def_parame=True):
     return param + " | %s | %s |\n" % (param_type, param_str)
 
 
-def save_markdown(url='', filename='makedown.md', description='', method='', header='', body='', result='', explan=''):
+def save_markdown(url='', filename='makedown.md', description='', method='', header='', query='', body='', result='',
+                  explan=''):
     url = config['host'] + re.sub("{{host}}", '', url)
     url = re.sub("/[0-9]+", '/{{id}}', url)
-    string = load_template() % (description, url, method, header, body, result, explan)
+    string = load_template() % (description, url, method, header, query, body, result, explan)
     save_file(filename, string)
     return True
 
