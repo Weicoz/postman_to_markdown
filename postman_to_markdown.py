@@ -29,7 +29,7 @@ def load_json(path, isurl=False):
 def save_file(path, string):
     with open(path, "w", encoding='UTF-8') as f:
         f.write(string)
-        print(path + "保存文件完成")
+        print(path + " - 保存文件完成")
 
 
 def check_path():
