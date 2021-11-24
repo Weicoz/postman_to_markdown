@@ -6,6 +6,16 @@
         "success": "int|返回错误码 # 用 分隔号 可以指定返回类型",
         "data": "array|返回数据 # 公共类型"
     },
+    "module": {
+        "header": false
+    },
+    "ignoreQuery": {
+        "m": true,
+        "a": true
+    },
+    "ignoreBody": {
+        "errcode": true
+    },
     "api": {
         "login": {
             "login_name": "登陆用户名",
