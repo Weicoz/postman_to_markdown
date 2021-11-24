@@ -48,6 +48,8 @@ def run():
     filelist = list_all_files(json_path)
     for i in range(0, len(filelist)):
         global config
+        if '.json' not in filelist[i]:
+            continue
         config = load_json(config_path + '/' + filelist[i])
         res = load_json(json_path + '/' + filelist[i])
         doc = view_postman(res, {})
