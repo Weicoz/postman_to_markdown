@@ -126,7 +126,7 @@ def pluck_body(detail):
             return ""
     else:
         return ""
-    return "**POST参数：**\n\n|参数名|类型|必填|说明|参考参数|\n|:---- |:-----|:----- |:----- |----- |\n%s" % body
+    return "**Body参数：**\n\n|参数名|类型|必填|说明|参考参数|\n|:---- |:-----|:----- |:----- |----- |\n%s" % body
 
 
 def pluck_query(detail):
@@ -156,7 +156,7 @@ def pluck_query(detail):
             return ""
     else:
         return ""
-    return "**GET参数：**\n\n|参数名|类型|必填|说明|参考参数|\n|:---- |:-----|:----- |:----- |----- |\n%s" % query
+    return "**URL参数：**\n\n|参数名|类型|必填|说明|参考参数|\n|:---- |:-----|:----- |:----- |----- |\n%s" % query
 
 
 def pluck_description(detail):
